@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KS Coaching : AI CARE</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js สำหรับ Radar Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            /* พื้นหลังไล่สีสไตล์ Liquid / Futuristic Healthcare */
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #ddd6fe 100%);
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+        .glass-button {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+        .chat-bubble-ai {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 1px solid #e2e8f0;
+            border-radius: 20px 20px 20px 5px;
+        }
+        .chat-bubble-user {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-radius: 20px 20px 5px 20px;
+        }
+        /* ซ่อน Scrollbar แต่ยังเลื่อนได้ */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+    </style>
+</head>
+<body class="text-gray-800 p-4 md:p-8 flex items-center justify-center">
+
+    <!-- App Container -->
+    <div id="app-container" class="w-full max-w-md md:max-w-4xl min-h-[90vh] glass-panel rounded-3xl p-6 relative overflow-hidden flex flex-col">
+        
+        <!-- 1. หน้า Login -->
+        <div id="login-view" class="flex-1 flex flex-col items-center justify-center animate-fade-in">
+            <div class="w-24 h-24 bg-white/60 rounded-full flex items-center justify-center mb-6 shadow-lg border border-white">
+                <i class="fa-solid fa-robot text-4xl text-blue-500"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-blue-900 mb-2">KS Coaching</h1>
+            <p class="text-gray-600 mb-8 text-center">AI CARE Communication</p>
+            
+            <div class="w-full max-w-xs">
+                <input type="text" id="rn-id" placeholder="รหัสผู้ใช้ (เช่น RN03)" class="w-full px-4 py-3 rounded-xl bg-white/70 border border-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4 text-center text-lg font-medium">
+                <button onclick="login()" class="w-full py-3 rounded-xl glass-button text-blue-700 font-semibold text-lg shadow-md">
+                    เข้าสู่ระบบฝึกฝน <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. หน้า Dashboard -->
+        <div id="dashboard-view" class="hidden flex-1 flex-col h-full animate-fade-in">
+            <!-- Header Profile -->
+            <div class="flex justify-between items-center mb-6 border-b border-white/30 pb-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                        <i class="fa-solid fa-user-nurse text-2xl text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h2 id="user-display" class="text-xl font-bold text-gray-800">RN03</h2>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">Level 2: Caregiver</span>
+                            <span class="text-xs text-gray-500"><i class="fa-solid fa-star text-yellow-400"></i> 1,250 XP</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="logout()" class="text-gray-400 hover:text-red-500 transition"><i class="fa-solid fa-power-off text-xl"></i></button>
+            </div>
+
+            <!-- Content Grid (Responsive) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+                <!-- Radar Chart -->
+                <div class="glass-panel p-4 rounded-2xl flex flex-col items-center">
+                    <h3 class="font-semibold text-gray-700 mb-2">AI CARE Profile</h3>
+                    <div class="w-full max-w-[250px] aspect-square relative">
+                        <canvas id="skillsChart"></canvas>
+                    </div>
+                    <div class="mt-4 w-full bg-white/50 p-3 rounded-xl text-center border border-white">
+                        <p class="text-sm text-gray-600">เป้าหมายการพัฒนาสัปดาห์นี้:</p>
+                        <p class="text-lg font-bold text-red-500">Empathy (ความเห็นอกเห็นใจ)</p>
+                    </div>
+                </div>
+
+                <!-- Scenario Selection -->
+                <div class="flex flex-col gap-3 overflow-y-auto pr-2">
+                    <h3 class="font-semibold text-gray-700 mb-2">เลือกสถานการณ์ (Scenario)</h3>
+                    
+                    <button onclick="startScenario('ญาติกังวลเรื่องเวลากลับบ้าน')" class="glass-button p-4 rounded-xl text-left flex justify-between items-center group">
+                        <div>
+                            <span class="text-xs font-bold text-orange-500 bg-orange-100 px-2 py-1 rounded-md mb-2 inline-block">Level 3</span>
+                            <h4 class="font-bold text-gray-800 group-hover:text-blue-600 transition">ญาติไม่พอใจเรื่องเวลากลับบ้าน</h4>
+                            <p class="text-xs text-gray-500 mt-1">Focus: Empathy, Explanation</p>
+                        </div>
+                        <i class="fa-solid fa-play text-gray-300 group-hover:text-blue-500 text-xl transition"></i>
+                    </button>
+
+                    <button class="glass-button p-4 rounded-xl text-left flex justify-between items-center opacity-70 cursor-not-allowed">
+                        <div>
+                            <span class="text-xs font-bold text-red-500 bg-red-100 px-2 py-1 rounded-md mb-2 inline-block">Level 4</span>
+                            <h4 class="font-bold text-gray-800">ผู้ป่วยปฏิเสธการรักษา</h4>
+                            <p class="text-xs text-gray-500 mt-1">Focus: Clinical Judgment, Listen</p>
+                        </div>
+                        <i class="fa-solid fa-lock text-gray-300 text-xl"></i>
+                    </button>
+                    
+                    <!-- เพิ่มสถานการณ์อื่นๆ ได้ที่นี่ -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. หน้า Role-play (Chat) -->
+        <div id="chat-view" class="hidden flex-col h-full animate-fade-in relative">
+            <!-- Header -->
+            <div class="flex items-center gap-3 border-b border-white/30 pb-4 mb-4">
+                <button onclick="backToDashboard()" class="text-gray-500 hover:text-blue-600 p-2"><i class="fa-solid fa-chevron-left"></i></button>
+                <div>
+                    <h3 class="font-bold text-gray-800" id="scenario-title">ญาติไม่พอใจ</h3>
+                    <p class="text-xs text-gray-500">AI Patient is typing...</p>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div id="chat-box" class="flex-1 overflow-y-auto mb-4 flex flex-col gap-4 pb-4 px-2">
+                <!-- AI Message จะถูก Append ที่นี่ -->
+            </div>
+
+            <!-- Feedback Panel (ซ่อนไว้ก่อน) -->
+            <div id="feedback-panel" class="hidden bg-white/80 backdrop-blur-md border border-blue-200 p-4 rounded-xl mb-4 shadow-lg">
+                <h4 class="font-bold text-blue-800 border-b border-blue-100 pb-2 mb-2">AI Feedback (คะแนน: 82/100)</h4>
+                <ul class="text-sm space-y-2 mb-3">
+                    <li class="text-green-600"><i class="fa-solid fa-check mr-2"></i><strong>ดี:</strong> รับฟังปัญหาและให้ข้อมูลชัดเจน</li>
+                    <li class="text-orange-500"><i class="fa-solid fa-triangle-exclamation mr-2"></i><strong>พัฒนา:</strong> ยังไม่ได้สะท้อนความรู้สึกของญาติ (Empathy)</li>
+                </ul>
+                <div class="bg-blue-50 p-3 rounded-lg text-sm text-gray-700 border border-blue-100">
+                    <strong>💡 AI แนะนำ:</strong> "เข้าใจครับว่าการที่ยังไม่ทราบเวลากลับบ้านทำให้วางแผนลำบาก เดี๋ยวผมตรวจสอบกับทีมให้และจะกลับมาแจ้งนะครับ"
+                </div>
+                <button onclick="retryScenario()" class="mt-3 w-full py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition text-sm font-semibold">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> ลองตอบใหม่
+                </button>
+            </div>
+
+            <!-- Input Area -->
+            <div class="relative flex items-center">
+                <input type="text" id="chat-input" placeholder="พิมพ์คำตอบของคุณที่นี่..." class="w-full pl-4 pr-12 py-3 rounded-full bg-white/80 border border-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm" onkeypress="handleEnter(event)">
+                <button onclick="sendMessage()" class="absolute right-2 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition shadow-md">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script ควบคุมการทำงาน -->
+    <script>
+        // State
+        let radarChart = null;
+
+        // --- Functions ---
+        function switchView(viewId) {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('chat-view').classList.add('hidden');
+            
+            document.getElementById(viewId).classList.remove('hidden');
+            document.getElementById(viewId).classList.add('flex');
+        }
+
+        function login() {
+            const rnId = document.getElementById('rn-id').value;
+            if(!rnId) {
+                alert('กรุณากรอกรหัสผู้ใช้');
+                return;
+            }
+            document.getElementById('user-display').innerText = rnId.toUpperCase();
+            switchView('dashboard-view');
+            initChart();
+        }
+
+        function logout() {
+            document.getElementById('rn-id').value = '';
+            switchView('login-view');
+        }
+
+        function initChart() {
+            if(radarChart) radarChart.destroy();
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Greeting', 'Explanation', 'Listening', 'Empathy', 'Closing'],
+                    datasets: [{
+                        label: 'คะแนนปัจจุบัน',
+                        data: [90, 85, 72, 60, 88],
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)', // Blue
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 100,
+                            ticks: { display: false },
+                            grid: { color: 'rgba(255,255,255,0.5)' },
+                            pointLabels: { font: { family: 'Prompt', size: 11 } }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function startScenario(title) {
+            document.getElementById('scenario-title').innerText = title;
+            switchView('chat-view');
+            document.getElementById('chat-box').innerHTML = ''; // Clear chat
+            document.getElementById('feedback-panel').classList.add('hidden'); // Hide feedback
+            
+            // AI ทักทาย
+            setTimeout(() => {
+                appendMessage('ai', 'ตั้งแต่เช้ายังไม่มีใครบอกเลยว่าจะได้กลับบ้านกี่โมง ถ้ากลับไม่ได้ก็บอกกันสิ จะได้ไม่ต้องรอ!');
+            }, 500);
+        }
+
+        function backToDashboard() {
+            switchView('dashboard-view');
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function appendMessage(sender, text) {
+            const box = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            
+            if(sender === 'ai') {
+                div.className = 'self-start max-w-[85%] chat-bubble-ai p-3 shadow-sm relative flex gap-3 items-start';
+                div.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-orange-200 border border-orange-300 flex-shrink-0 flex items-center justify-center text-orange-600 mt-1">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div><p class="text-sm text-gray-800">${text}</p></div>
+                `;
+            } else {
+                div.className = 'self-end max-w-[85%] chat-bubble-user p-3 shadow-md text-sm';
+                div.innerHTML = `<p>${text}</p>`;
+            }
+            
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if(!text) return;
+
+            appendMessage('user', text);
+            input.value = '';
+
+            // จำลองการคิดของ AI และดึง Feedback (ของจริงจะต่อ API ตรงนี้)
+            setTimeout(() => {
+                showFeedback();
+            }, 1500);
+        }
+
+        function showFeedback() {
+            const feedbackPanel = document.getElementById('feedback-panel');
+            feedbackPanel.classList.remove('hidden');
+            const chatBox = document.getElementById('chat-box');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function retryScenario() {
+            document.getElementById('feedback-panel').classList.add('hidden');
+            appendMessage('ai', 'ลองอีกครั้งนะ: "ตั้งแต่เช้ายังไม่มีใครบอกเลยว่าจะได้กลับบ้านกี่โมง ถ้ากลับไม่ได้ก็บอกกันสิ จะได้ไม่ต้องรอ!"');
+        }
+    </script>
+</body>
+</html>
