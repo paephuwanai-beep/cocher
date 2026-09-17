@@ -3,195 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KS ARENA | AI CARE</title>
+    <title>KS ARENA | The Arena of Humanized Communication</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background: url('https://www.transparenttextures.com/patterns/cubes.png'), linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            /* ธีม Dark Mode Gamification ผสมความล้ำสมัย */
+            background: radial-gradient(circle at top, #1e1b4b 0%, #0f172a 100%);
             min-height: 100vh;
             font-family: 'Prompt', sans-serif;
             color: #f8fafc;
         }
-        /* Game UI Panels */
-        .game-panel {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(12px);
-            border: 2px solid rgba(99, 102, 241, 0.5);
-            box-shadow: 0 0 20px rgba(79, 70, 229, 0.3), inset 0 0 10px rgba(99, 102, 241, 0.2);
-            border-radius: 16px;
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.2), inset 0 0 10px rgba(99, 102, 241, 0.1);
+            border-radius: 20px;
         }
-        .stage-btn {
-            background: linear-gradient(180deg, #3730a3 0%, #312e81 100%);
-            border: 2px solid #4f46e5;
-            transition: all 0.2s;
+        .module-btn {
+            background: linear-gradient(145deg, rgba(49, 46, 129, 0.8) 0%, rgba(30, 27, 75, 0.9) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .stage-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 15px #6366f1;
+        .module-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
             border-color: #818cf8;
         }
         .hidden-screen { display: none !important; }
         
-        /* Mood Bar Animation */
-        .hp-bar-container { border: 2px solid #1e293b; background: #0f172a; border-radius: 8px; overflow: hidden; height: 24px; position: relative; }
+        /* Mood Bar */
+        .hp-bar-container { background: #0f172a; border-radius: 8px; overflow: hidden; height: 16px; border: 1px solid #334155; }
         .hp-bar-fill { height: 100%; transition: width 0.5s ease-out, background-color 0.5s; width: 50%; background: #eab308; }
         
-        @keyframes pop { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .animate-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        /* Mic Animation */
+        @keyframes pulse-mic { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        .recording { animation: pulse-mic 1.5s infinite; background-color: #ef4444 !important; border-color: #ef4444 !important; color: white !important; }
+        
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+        .animate-pop { animation: popIn 0.4s ease-out forwards; }
     </style>
 </head>
 <body class="p-4 md:p-8 flex items-center justify-center flex-col">
 
-    <!-- 1. หน้า Login -->
-    <div id="authScreen" class="game-panel p-8 w-full max-w-md text-center animate-pop">
-        <div class="mb-8">
-            <h1 class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 mb-2" style="text-shadow: 0 0 20px rgba(99,102,241,0.5);">KS ARENA</h1>
-            <p class="text-indigo-200 font-semibold tracking-wider">THE COMMUNICATION GAME</p>
-        </div>
-        <div class="space-y-4 mb-6">
-            <input type="text" id="loginId" placeholder="PLAYER ID (เช่น RN001)" class="w-full p-3 rounded-lg border-2 border-indigo-500 bg-slate-800 text-white focus:outline-none focus:border-indigo-300 text-center font-bold">
-            <button onclick="login()" class="w-full p-3 rounded-lg font-bold text-white bg-indigo-600 hover:bg-indigo-500 transition shadow-[0_0_15px_rgba(79,70,229,0.5)]">START GAME</button>
+    <!-- 1. หน้า Login / Create Profile -->
+    <div id="authScreen" class="glass-panel p-8 w-full max-w-md text-center animate-pop">
+        <h1 class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 mb-2 drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]">KS ARENA</h1>
+        <p class="text-indigo-300 font-semibold mb-8 text-sm tracking-widest">THE ARENA OF HUMANIZED COMMUNICATION</p>
+        
+        <div class="space-y-4 mb-4">
+            <input type="text" id="loginId" placeholder="PLAYER ID (เช่น RN001)" class="w-full p-4 rounded-xl border border-indigo-500/50 bg-slate-800/80 text-white text-center font-bold tracking-wider focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400">
+            <button onclick="login()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold p-4 rounded-xl shadow-[0_0_15px_rgba(79,70,229,0.4)] transition">ENTER ARENA</button>
         </div>
     </div>
 
-    <!-- 2. หน้า Dashboard (Main Hub) -->
-    <div id="dashboardScreen" class="hidden-screen w-full max-w-4xl animate-pop">
+    <!-- 2. Dashboard (Main Hub 4 โมดูล) -->
+    <div id="dashboardScreen" class="hidden-screen w-full max-w-5xl animate-pop">
         <!-- Player Status -->
-        <div class="game-panel p-4 flex justify-between items-center mb-6">
+        <div class="glass-panel p-5 flex justify-between items-center mb-6">
             <div class="flex items-center gap-4">
-                <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-4xl border-2 border-indigo-400">🧑‍⚕️</div>
+                <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-4xl border-2 border-indigo-400 shadow-[0_0_10px_rgba(99,102,241,0.3)]">🧑‍⚕️</div>
                 <div>
                     <h2 class="text-2xl font-black text-indigo-300" id="dashName">PLAYER_1</h2>
-                    <p class="text-sm text-indigo-200">Level 1 | XP: 0 / 1000</p>
-                    <div class="w-32 h-2 bg-slate-700 mt-1 rounded-full"><div class="w-0 h-full bg-blue-400 rounded-full"></div></div>
+                    <p class="text-xs text-indigo-200/80 mb-1">Rank: Novice Nurse | XP: 450/1000</p>
+                    <div class="w-48 h-2 bg-slate-700 rounded-full overflow-hidden"><div class="w-[45%] h-full bg-gradient-to-r from-cyan-400 to-indigo-500"></div></div>
                 </div>
             </div>
-            <button onclick="switchScreen('authScreen')" class="text-red-400 font-bold hover:text-red-300">LOGOUT</button>
+            <button onclick="switchScreen('authScreen')" class="text-red-400 text-sm font-bold hover:text-red-300">LOGOUT</button>
         </div>
 
-        <h3 class="text-2xl font-black text-white mb-4 drop-shadow-md">⚔️ SELECT STAGE (เลือกด่าน)</h3>
-        
-        <!-- Stage Selection -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="stageList">
-            <!-- ด่านถูกสร้างผ่าน JS -->
+        <!-- 4 Modules Menu -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- 1. AI CARE Coach -->
+            <button class="module-btn p-6 rounded-2xl text-left flex flex-col justify-between h-40" onclick="alert('ระบบวิเคราะห์จุดอ่อนและปรับแผนการฝึกส่วนบุคคล (Coming Soon)')">
+                <div class="flex justify-between items-start w-full">
+                    <span class="text-3xl">🤖</span>
+                    <span class="bg-indigo-900/50 text-indigo-300 text-[10px] font-bold px-2 py-1 rounded">PRIVATE</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-1">AI CARE Coach</h3>
+                    <p class="text-xs text-slate-400">ระบบฝึกส่วนบุคคล วิเคราะห์จุดอ่อนของคุณ</p>
+                </div>
+            </button>
+
+            <!-- 2. COMM ARENA (เปิดหน้าเลือกด่าน) -->
+            <button class="module-btn p-6 rounded-2xl text-left flex flex-col justify-between h-40 border-indigo-400 shadow-[0_0_15px_rgba(79,70,229,0.3)]" onclick="switchScreen('stageSelectScreen')">
+                <div class="flex justify-between items-start w-full">
+                    <span class="text-3xl">🎭</span>
+                    <span class="bg-green-900/50 text-green-400 text-[10px] font-bold px-2 py-1 rounded border border-green-700">ACTIVE</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-1 text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-cyan-300">COMM ARENA</h3>
+                    <p class="text-xs text-slate-400">สนามฝึก Role Play สถานการณ์ผู้ป่วยใน (IPD)</p>
+                </div>
+            </button>
+
+            <!-- 3. KS ARENA CHALLENGE -->
+            <button class="module-btn p-6 rounded-2xl text-left flex flex-col justify-between h-40" onclick="alert('สุ่มสถานการณ์สุดโหดประจำสัปดาห์ โหมดห้ามใช้ตัวช่วย (Coming Soon)')">
+                <div class="flex justify-between items-start w-full">
+                    <span class="text-3xl">⚔️</span>
+                    <span class="bg-orange-900/50 text-orange-400 text-[10px] font-bold px-2 py-1 rounded">WEEKLY</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-orange-400 mb-1">KS ARENA CHALLENGE</h3>
+                    <p class="text-xs text-slate-400">การแข่งขันสุ่มสถานการณ์ ทำคะแนนสูงสุด</p>
+                </div>
+            </button>
+
+            <!-- 4. KS ARENA RANK -->
+            <button class="module-btn p-6 rounded-2xl text-left flex flex-col justify-between h-40" onclick="alert('ตารางจัดอันดับ Champion ของวอร์ด (Coming Soon)')">
+                <div class="flex justify-between items-start w-full">
+                    <span class="text-3xl">🏆</span>
+                    <span class="bg-purple-900/50 text-purple-400 text-[10px] font-bold px-2 py-1 rounded">LEADERBOARD</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-purple-400 mb-1">KS ARENA RANK</h3>
+                    <p class="text-xs text-slate-400">คะแนน ความก้าวหน้า และ Champion Board</p>
+                </div>
+            </button>
         </div>
     </div>
 
-    <!-- 3. หน้า Game Arena (Role Play) -->
-    <div id="chatScreen" class="hidden-screen game-panel flex flex-col w-full max-w-3xl h-[85vh] animate-pop mt-2">
+    <!-- 3. หน้าเลือกด่าน (Sub-menu ของ COMM ARENA) -->
+    <div id="stageSelectScreen" class="hidden-screen w-full max-w-5xl animate-pop">
+        <div class="flex justify-between items-center mb-6 px-2">
+            <h2 class="text-2xl font-black text-white flex items-center gap-2"><span class="text-3xl">🎭</span> COMM ARENA: SELECT STAGE</h2>
+            <button onclick="switchScreen('dashboardScreen')" class="text-indigo-300 hover:text-white font-bold bg-slate-800 px-4 py-2 rounded-lg text-sm border border-slate-600">กลับหน้าหลัก</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- ด่าน 1 -->
+            <div class="glass-panel p-5 hover:bg-slate-800/80 transition cursor-pointer border-l-4 border-l-red-500" onclick="startArena('ญาติโวยวายรอนาน', 'ชายสูงวัย หงุดหงิดที่ยังไม่ได้กลับบ้าน', 'ตั้งแต่เช้ายังไม่มีใครบอกเลยว่าจะได้กลับบ้านกี่โมง ถ้ากลับไม่ได้ก็บอกกันสิ!', 'angry', 2)">
+                <div class="flex justify-between mb-2"><span class="text-red-400 text-xs font-bold">⭐ รับมือความโกรธ</span> <span class="text-2xl">😠</span></div>
+                <h4 class="font-bold text-lg text-white">ญาติโวยวายเรื่องรอจำหน่าย</h4>
+                <p class="text-xs text-slate-400 mt-1">ผู้ป่วยหงุดหงิดที่ต้องรอนานโดยไม่ทราบเวลา เป้าหมาย: ลดอุณหภูมิอารมณ์</p>
+            </div>
+            <!-- ด่าน 2 -->
+            <div class="glass-panel p-5 hover:bg-slate-800/80 transition cursor-pointer border-l-4 border-l-orange-500" onclick="startArena('ปฏิเสธการรักษา', 'ผู้ป่วยชาย ปฏิเสธการเจาะเลือด', 'ผมไม่เจาะเลือดแล้ว! เจาะไปทำไมทุกวัน แขนผมพรุนหมดแล้ว ไม่เจาะ!!', 'stubborn', 3)">
+                <div class="flex justify-between mb-2"><span class="text-orange-400 text-xs font-bold">⭐⭐ ผู้ป่วยหัวดื้อ</span> <span class="text-2xl">😤</span></div>
+                <h4 class="font-bold text-lg text-white">ผู้ป่วยดื้อ ปฏิเสธการเจาะเลือด</h4>
+                <p class="text-xs text-slate-400 mt-1">เกลี้ยกล่อมผู้ป่วยที่มีความกังวลและเจ็บปวด เป้าหมาย: ให้ยอมรับการรักษา</p>
+            </div>
+            <!-- ด่าน 3 -->
+            <div class="glass-panel p-5 hover:bg-slate-800/80 transition cursor-pointer border-l-4 border-l-blue-500" onclick="startArena('ให้ข้อมูลยา High Alert', 'ผู้ป่วยวิตกกังวล', 'พยาบาลคะ ยาตัวนี้ฉีดแล้วใจจะสั่นไหม ป้ากลัวจังเลย...', 'anxious', 1)">
+                <div class="flex justify-between mb-2"><span class="text-blue-400 text-xs font-bold">⭐ วิตกกังวล</span> <span class="text-2xl">🥺</span></div>
+                <h4 class="font-bold text-lg text-white">แนะนำยาก่อนบริหารยา (High Alert)</h4>
+                <p class="text-xs text-slate-400 mt-1">ฝึกการให้ข้อมูลผลข้างเคียง เป้าหมาย: สร้างความมั่นใจให้ผู้ป่วย</p>
+            </div>
+            <!-- ด่าน 4 -->
+            <div class="glass-panel p-5 hover:bg-slate-800/80 transition cursor-pointer border-l-4 border-l-purple-500" onclick="startArena('Palliative Care', 'ญาติผู้ป่วยระยะท้าย', 'หมอบอกว่าแกจะไม่ไหวแล้วหรอคะ... แล้วพยาบาลจะช่วยแกยังไงได้บ้าง...', 'sad', 4)">
+                <div class="flex justify-between mb-2"><span class="text-purple-400 text-xs font-bold">⭐⭐⭐ ทักษะขั้นสูง</span> <span class="text-2xl">😢</span></div>
+                <h4 class="font-bold text-lg text-white">การสื่อสารระยะประคับประคอง</h4>
+                <p class="text-xs text-slate-400 mt-1">รับฟังด้วยความเข้าใจ และให้ข้อมูลการดูแลระยะท้ายอย่างละเอียดอ่อน</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. หน้าต่อสู้ (Voice Role Play + Mood Bar) -->
+    <div id="arenaScreen" class="hidden-screen glass-panel flex flex-col w-full max-w-3xl h-[85vh] animate-pop">
         
         <!-- Header & Boss HP -->
-        <div class="p-4 border-b-2 border-indigo-500/50 bg-slate-800/80 rounded-t-xl shadow-lg">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="font-bold text-indigo-300 text-lg" id="stageTitleDisplay">STAGE 1: ญาติหัวร้อน</h3>
-                <button onclick="switchScreen('dashboardScreen')" class="bg-red-900/50 text-red-300 px-3 py-1 rounded border border-red-500 text-xs font-bold hover:bg-red-800">FLEE (หนี)</button>
+        <div class="p-4 border-b border-indigo-500/30 bg-slate-900/60 rounded-t-20 shadow-lg">
+            <div class="flex justify-between items-start mb-3">
+                <div>
+                    <h3 class="font-bold text-indigo-300 text-lg flex items-center gap-2" id="arenaTitle"><span class="animate-pulse">🔴</span> สถานการณ์...</h3>
+                    <p class="text-xs text-slate-400" id="arenaContext">NPC: ...</p>
+                </div>
+                <button onclick="switchScreen('stageSelectScreen')" class="bg-red-900/30 text-red-400 px-3 py-1 rounded-lg border border-red-500/50 text-xs font-bold hover:bg-red-800/50">FLEE (หนี)</button>
             </div>
             
             <!-- Patient Mood Bar (หลอดอารมณ์) -->
             <div class="w-full">
-                <div class="flex justify-between text-xs font-bold text-slate-300 mb-1">
-                    <span>อารมณ์ผู้ป่วย (Patient Mood)</span>
+                <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-1">
+                    <span>PATIENT MOOD (อารมณ์ผู้ป่วย)</span>
                     <span id="moodPercentage">50%</span>
                 </div>
                 <div class="hp-bar-container">
                     <div id="moodBar" class="hp-bar-fill"></div>
                 </div>
-                <p class="text-[10px] text-center text-indigo-300 mt-1" id="moodStatusText">สถานะ: หงุดหงิด (รอดูท่าทีของคุณ)</p>
             </div>
         </div>
         
-        <!-- พื้นที่ต่อสู้ (Chat) -->
-        <div id="chatBox" class="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-900/60">
-            <!-- Messages -->
+        <!-- พื้นที่แชท -->
+        <div id="chatBox" class="flex-1 p-5 overflow-y-auto space-y-5 bg-slate-900/40">
+            <!-- ข้อความ -->
         </div>
 
-        <!-- Input Box -->
-        <div class="p-4 bg-slate-800 border-t-2 border-indigo-500/50 rounded-b-xl flex gap-2">
-            <input type="text" id="userMessageInput" placeholder="พิมพ์คำตอบของคุณเพื่อโจมตี/ป้องกัน..." class="flex-1 p-3 rounded-lg border-2 border-indigo-400 bg-slate-700 text-white focus:outline-none focus:border-indigo-300" onkeypress="handleEnter(event)">
-            <button onclick="sendUserMessage()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3 rounded-lg shadow-[0_0_10px_rgba(79,70,229,0.8)]">ACTION</button>
+        <!-- พื้นที่ Input (ไมค์ + พิมพ์) -->
+        <div class="p-4 bg-slate-800/80 border-t border-indigo-500/30 rounded-b-20 flex gap-2 items-center">
+            <button id="micBtn" onclick="toggleRecording()" class="w-14 h-14 bg-slate-700 text-indigo-400 rounded-full flex items-center justify-center text-2xl border border-indigo-500/50 hover:bg-slate-600 transition shrink-0">
+                🎙️
+            </button>
+            <input type="text" id="userInput" placeholder="พิมพ์หรือกดไมค์เพื่อตอบโต้..." class="flex-1 p-4 rounded-xl border border-indigo-500/30 bg-slate-900 text-white focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400">
+            <button onclick="sendAction()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-4 rounded-xl transition shadow-[0_0_10px_rgba(79,70,229,0.5)] shrink-0">ACTION</button>
         </div>
     </div>
 
-    <!-- 4. หน้า Mission Clear -->
-    <div id="resultScreen" class="hidden-screen game-panel p-8 w-full max-w-md text-center animate-pop mt-10">
-        <h1 class="text-4xl font-black text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(234,179,8,0.8)]" id="resultTitle">MISSION CLEAR!</h1>
-        <div class="text-6xl my-6" id="rankDisplay">🏆 S</div>
+    <!-- 5. หน้าสรุปผลแบบ Game Rank -->
+    <div id="resultScreen" class="hidden-screen glass-panel p-8 w-full max-w-md text-center animate-pop">
+        <h1 class="text-4xl font-black text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(234,179,8,0.8)]" id="resultStatus">STAGE CLEARED!</h1>
+        <p class="text-slate-400 text-sm mb-6" id="resultDesc">การตอบสนองของคุณทำให้อุณหภูมิอารมณ์ผู้ป่วยลดลง</p>
         
-        <div class="bg-slate-800 p-4 rounded-lg border border-indigo-500 text-left mb-6 space-y-2 text-sm">
-            <div class="flex justify-between text-green-400"><span>✅ Empathy (ความเข้าใจ):</span> <span>+300 XP</span></div>
-            <div class="flex justify-between text-green-400"><span>✅ Solution (การแก้ปัญหา):</span> <span>+200 XP</span></div>
-            <div class="flex justify-between text-indigo-300 border-t border-slate-600 pt-2 font-bold"><span>TOTAL XP EARNED:</span> <span id="xpGained">+500 XP</span></div>
+        <div class="text-7xl mb-6 font-black" id="rankDisplay" style="text-shadow: 0 0 20px currentColor;">🏆 S</div>
+        
+        <div class="bg-slate-900 p-4 rounded-xl border border-indigo-500/50 text-left mb-6 text-sm">
+            <div class="flex justify-between text-green-400 mb-2"><span>💬 Empathy Hit:</span> <span>+300 XP</span></div>
+            <div class="flex justify-between text-cyan-400 mb-2"><span>🎯 Solution Hit:</span> <span>+200 XP</span></div>
+            <div class="h-px bg-slate-700 my-3"></div>
+            <div class="flex justify-between text-indigo-300 font-bold"><span>TOTAL XP EARNED:</span> <span>+500 XP</span></div>
         </div>
 
-        <p class="text-sm text-slate-300 mb-6 italic" id="aiFeedback">"คุณรับมือความโกรธได้ดีมาก การใช้คำว่า 'เข้าใจครับ' ช่วยลดอุณหภูมิอารมณ์ญาติได้ดี"</p>
-        
-        <button onclick="switchScreen('dashboardScreen')" class="w-full p-3 rounded-lg font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-[0_0_15px_rgba(79,70,229,0.5)]">RETURN TO HUB</button>
+        <button onclick="switchScreen('dashboardScreen')" class="w-full p-4 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-[0_0_15px_rgba(79,70,229,0.5)]">RETURN TO HUB</button>
     </div>
 
     <script>
-        let userName = "RN_GAMER";
-        let currentStageId = null;
-        let moodScore = 50; 
-        let currentTurn = 0;
-        let isAiTyping = false;
+        let isRecording = false;
+        let activeEmotion = 'neutral';
+        let currentTurns = 0;
+        let targetTurns = 2; // จำนวนเทิร์นที่ต้องสู้ก่อนจบด่าน
+        let moodScore = 50;
 
-        // ฐานข้อมูลด่าน (Game Scenarios Database)
-        const stages = {
-            'stage1': {
-                id: 'stage1', title: 'ด่าน 1: ญาติหัวร้อน (รอนาน)', difficulty: '⭐⭐',
-                npc: 'ญาติผู้ป่วย (ชาย)', avatar: '😠',
-                startMsg: "นี่มันจะเที่ยงแล้วนะ! ตั้งแต่เช้ายังไม่มีพยาบาลมาบอกเลยว่าจะได้กลับบ้านไหม ทำงานกันยังไงเนี่ย!",
-                turns: [
-                    { 
-                        trigger: "turn1", 
-                        replyGood: "ดีขึ้นนิดหน่อย แต่ก็ยังต้องรีบจัดการให้ผมนะ ผมจ้างรถมาแพง!", 
-                        replyBad: "ไม่ต้องมาอ้างนู่นอ้างนี่เลย สรุปจะได้กลับไหม ไปตามหมอมาคุยเลยดีกว่า!" 
-                    }
-                ]
-            },
-            'stage2': {
-                id: 'stage2', title: 'ด่าน 2: ผู้ป่วยแพนิค (กลัวเข็ม/ยา)', difficulty: '⭐',
-                npc: 'ผู้ป่วย (หญิงสูงวัย)', avatar: '😨',
-                startMsg: "พยาบาลคะ... ยานี้มันจะแสบไหม ป้าเคยฉีดแล้วมันใจสั่น ป้าไม่ฉีดได้ไหมลูก...",
-                turns: [
-                    { 
-                        trigger: "turn1", 
-                        replyGood: "ค่อยโล่งใจหน่อย งั้นพยาบาลค่อยๆ ฉีดให้ป้านะลูก", 
-                        replyBad: "โอ๊ย ไม่เอาหรอก ป้ากลัว! หมอสั่งก็ช่างเถอะ ป้าไม่ยอม!" 
-                    }
-                ]
-            },
-            'stage3': {
-                id: 'stage3', title: 'ด่าน 3: ปฏิเสธการรักษา (หัวดื้อ)', difficulty: '⭐⭐⭐',
-                npc: 'ผู้ป่วย (ชาย)', avatar: '😤',
-                startMsg: "ผมไม่เจาะเลือดแล้ว! เจาะไปทำไมทุกวัน แขนผมพรุนหมดแล้ว ไม่เจาะ!!",
-                turns: [
-                    { 
-                        trigger: "turn1", 
-                        replyGood: "อืม... เข้าใจล่ะ งั้นเจาะครั้งนี้ครั้งสุดท้ายนะ เบามือหน่อยล่ะ", 
-                        replyBad: "ไม่ต้องมาพูดดีเลย ผมบอกว่าไม่ก็คือไม่ ออกไปเลย!" 
-                    }
-                ]
+        // --- STT (Speech Recognition) ---
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'th-TH';
+            recognition.interimResults = false;
+            
+            recognition.onresult = function(event) {
+                document.getElementById('userInput').value = event.results[0][0].transcript;
+                toggleRecording(); 
+            };
+            recognition.onerror = function() { toggleRecording(); alert("เกิดข้อผิดพลาดกับไมโครโฟน"); };
+        }
+
+        // --- TTS (Text to Speech) ---
+        function speakText(text, pitch = 1, rate = 1.1) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let msg = new SpeechSynthesisUtterance(text);
+                msg.lang = 'th-TH'; msg.pitch = pitch; msg.rate = rate; 
+                window.speechSynthesis.speak(msg);
             }
-        };
-
-        function initStages() {
-            const container = document.getElementById('stageList');
-            container.innerHTML = '';
-            Object.keys(stages).forEach(key => {
-                const s = stages[key];
-                container.innerHTML += `
-                    <button class="stage-btn p-5 rounded-xl text-left flex justify-between items-center" onclick="startStage('${s.id}')">
-                        <div>
-                            <span class="block text-indigo-300 text-xs font-bold mb-1">DIFFICULTY: ${s.difficulty}</span>
-                            <span class="block text-white font-bold text-lg">${s.title}</span>
-                            <span class="block text-slate-400 text-sm mt-1">NPC: ${s.npc}</span>
-                        </div>
-                        <span class="text-4xl">${s.avatar}</span>
-                    </button>
-                `;
-            });
         }
 
         function switchScreen(screenId) {
@@ -200,115 +255,124 @@
         }
 
         function login() {
-            const id = document.getElementById('loginId').value;
-            if(!id) return alert("กรุณาใส่ ID ผู้เล่น");
+            let id = document.getElementById('loginId').value;
+            if(!id) id = "RN001";
             document.getElementById('dashName').innerText = id.toUpperCase();
-            initStages();
             switchScreen('dashboardScreen');
         }
 
-        // --- Game Logic ---
-        function startStage(stageId) {
-            currentStageId = stageId;
-            currentTurn = 0;
-            moodScore = 50; 
-            updateMoodBar();
-            
-            const stage = stages[stageId];
-            document.getElementById('stageTitleDisplay').innerText = stage.title;
-            document.getElementById('chatBox').innerHTML = '';
-            
-            switchScreen('chatScreen');
+        function toggleRecording() {
+            const micBtn = document.getElementById('micBtn');
+            if (!recognition) return alert("บราวเซอร์ไม่รองรับคำสั่งเสียง");
 
-            setTimeout(() => {
-                appendChat('system', `🔥 ENCOUNTER! คุณพบกับ [${stage.npc}]`);
-                setTimeout(() => {
-                    appendChat('npc', stage.startMsg);
-                }, 1000);
-            }, 500);
+            if (isRecording) {
+                recognition.stop();
+                isRecording = false;
+                micBtn.classList.remove('recording');
+            } else {
+                recognition.start();
+                isRecording = true;
+                micBtn.classList.add('recording');
+                document.getElementById('userInput').placeholder = "กำลังฟัง... พูดได้เลยครับ";
+            }
         }
 
         function updateMoodBar() {
             const bar = document.getElementById('moodBar');
-            const percentText = document.getElementById('moodPercentage');
-            const statusText = document.getElementById('moodStatusText');
-            
             bar.style.width = moodScore + '%';
-            percentText.innerText = moodScore + '%';
-
-            if (moodScore > 75) { bar.style.backgroundColor = '#22c55e'; statusText.innerText = 'สถานะ: สงบลง/พอใจ (Safe)'; }
-            else if (moodScore > 35) { bar.style.backgroundColor = '#eab308'; statusText.innerText = 'สถานะ: หงุดหงิด/กังวล (Warning)'; }
-            else { bar.style.backgroundColor = '#ef4444'; statusText.innerText = 'สถานะ: โกรธจัด/ปฏิเสธ (Danger!)'; }
+            document.getElementById('moodPercentage').innerText = moodScore + '%';
+            
+            if (moodScore >= 75) bar.style.backgroundColor = '#22c55e'; // Safe
+            else if (moodScore >= 35) bar.style.backgroundColor = '#eab308'; // Warning
+            else bar.style.backgroundColor = '#ef4444'; // Danger
         }
 
-        function handleEnter(e) { if(e.key === 'Enter') sendUserMessage(); }
+        function startArena(title, context, startMsg, emotion, requiredTurns) {
+            moodScore = 50;
+            currentTurns = 0;
+            targetTurns = requiredTurns;
+            activeEmotion = emotion;
+            
+            updateMoodBar();
+            document.getElementById('arenaTitle').innerHTML = `<span class="animate-pulse">🔴</span> ${title}`;
+            document.getElementById('arenaContext').innerText = `NPC: ${context}`;
+            document.getElementById('chatBox').innerHTML = '';
+            
+            switchScreen('arenaScreen');
+            
+            setTimeout(() => {
+                appendChat('system', `ENCOUNTER! เตรียมรับมือสถานการณ์`);
+                setTimeout(() => {
+                    appendChat('npc', startMsg);
+                    let p = emotion === 'angry' ? 0.8 : (emotion === 'sad' ? 0.9 : 1.1);
+                    speakText(startMsg, p, 1.0);
+                }, 1000);
+            }, 500);
+        }
 
-        function sendUserMessage() {
-            if (isAiTyping) return;
-            const input = document.getElementById('userMessageInput');
+        function sendAction() {
+            const input = document.getElementById('userInput');
             const text = input.value.trim();
             if (!text) return;
 
             appendChat('user', text);
             input.value = '';
-            currentTurn++;
+            input.placeholder = "พิมพ์หรือกดไมค์เพื่อตอบโต้...";
+            currentTurns++;
             
-            processGameLogic(text);
+            processGameHit(text);
         }
 
-        function processGameLogic(userText) {
-            isAiTyping = true;
-            appendChat('system', '⚡ ระบบกำลังวิเคราะห์รูปประโยคของคุณ...');
+        function processGameHit(userText) {
+            // Mockup Scoring Logic
+            let damage = 0;
+            let goodWords = ['เข้าใจ', 'ขอโทษ', 'เดี๋ยว', 'ตรวจสอบ', 'รับทราบ', 'หมอ', 'อธิบาย'];
+            let hit = goodWords.some(w => userText.includes(w));
+            
+            if(hit) { damage = 25; appendChat('system', '🎯 <b>CRITICAL HIT!</b> ใช้คำพูดแสดง Empathy ได้ดี'); }
+            else if (userText.length < 10) { damage = -15; appendChat('system', '⚠️ ตอบสั้นเกินไป อารมณ์ผู้ป่วยแย่ลง'); }
+            else { damage = 10; }
 
-            // Mockup Logic: ตรวจจับคีย์เวิร์ดเพื่อให้คะแนน
+            moodScore += damage;
+            if(moodScore > 100) moodScore = 100;
+            if(moodScore < 0) moodScore = 0;
+            updateMoodBar();
+
             setTimeout(() => {
-                let points = 0;
-                let isGoodReply = false;
-                
-                // ถือเป็น AI NLP เบื้องต้น
-                if(userText.includes('เข้าใจ') || userText.includes('ขอโทษ') || userText.includes('สักครู่') || userText.includes('ตรวจสอบ')) {
-                    points = 30;
-                    isGoodReply = true;
-                } else if(userText.includes('ไม่รู้') || userText.includes('ต้องรอ') || userText.length < 10) {
-                    points = -20;
+                if (moodScore <= 0) {
+                    showResult(false);
+                } else if (currentTurns >= targetTurns) {
+                    if (moodScore >= 60) showResult(true);
+                    else {
+                        appendChat('npc', "ผมไม่อยากคุยกับคุณแล้ว ไปตามคนอื่นมาคุย!");
+                        speakText("ผมไม่อยากคุยกับคุณแล้ว", 0.8);
+                        setTimeout(() => showResult(false), 2000);
+                    }
                 } else {
-                    points = 10;
-                    isGoodReply = true;
-                }
-
-                moodScore += points;
-                if(moodScore > 100) moodScore = 100;
-                if(moodScore < 0) moodScore = 0;
-                
-                updateMoodBar();
-                
-                // ให้ NPC ตอบกลับตามอารมณ์
-                const stage = stages[currentStageId];
-                const reply = isGoodReply ? stage.turns[0].replyGood : stage.turns[0].replyBad;
-                
-                appendChat('npc', reply);
-                isAiTyping = false;
-
-                // ตรวจสอบจบเกม
-                if(moodScore <= 0) {
-                    setTimeout(() => showResult(false), 1500);
-                } else if (currentTurn >= 1 && moodScore >= 60) {
-                    setTimeout(() => showResult(true), 2000);
+                    // ยังไม่จบด่าน ให้ NPC ตอบโต้กลับ
+                    let reply = hit ? "ก็รีบๆ หน่อยละกัน ผมร้อนใจนะ" : "อย่ามาพูดส่งๆ นะ สรุปจะเอายังไงกันแน่!?";
+                    appendChat('npc', reply);
+                    speakText(reply, 0.9);
                 }
             }, 1500);
         }
 
         function showResult(isWin) {
-            document.getElementById('resultTitle').innerText = isWin ? "MISSION CLEAR!" : "MISSION FAILED";
-            document.getElementById('resultTitle').className = isWin ? "text-4xl font-black text-green-400 mb-2" : "text-4xl font-black text-red-500 mb-2";
+            window.speechSynthesis.cancel();
+            document.getElementById('resultStatus').innerText = isWin ? "STAGE CLEARED!" : "STAGE FAILED";
+            document.getElementById('resultStatus').className = isWin ? "text-4xl font-black text-green-400 mb-2 drop-shadow-[0_0_10px_rgba(74,222,128,0.8)]" : "text-4xl font-black text-red-500 mb-2 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]";
             
-            let rank = 'C';
-            if(moodScore >= 90) rank = 'S';
-            else if(moodScore >= 75) rank = 'A';
-            else if(moodScore >= 60) rank = 'B';
-            else rank = 'F';
+            let rank = 'C'; let rankColor = '#94a3b8';
+            if(moodScore >= 90) { rank = 'S'; rankColor = '#fbbf24'; }
+            else if(moodScore >= 70) { rank = 'A'; rankColor = '#38bdf8'; }
+            else if(moodScore >= 50) { rank = 'B'; rankColor = '#4ade80'; }
+            else { rank = 'F'; rankColor = '#ef4444'; }
 
-            document.getElementById('rankDisplay').innerText = `🏆 RANK: ${rank}`;
+            const display = document.getElementById('rankDisplay');
+            display.innerText = `🏆 ${rank}`;
+            display.style.color = rankColor;
+            
+            speakText(isWin ? "ผ่านด่านสำเร็จ ยินดีด้วยครับ" : "ภารกิจล้มเหลว พยายามใหม่นะครับ", 1.1);
             switchScreen('resultScreen');
         }
 
@@ -318,12 +382,12 @@
             div.className = 'animate-pop flex w-full ' + (role === 'user' ? 'justify-end' : 'justify-start');
             
             if(role === 'user') {
-                div.innerHTML = `<div class="bg-indigo-600 text-white p-3 rounded-xl rounded-tr-none border border-indigo-400 shadow-md max-w-[80%]">${text}</div>`;
+                div.innerHTML = `<div class="bg-indigo-600 text-white p-4 rounded-xl rounded-tr-none border border-indigo-400 shadow-[0_0_10px_rgba(79,70,229,0.3)] max-w-[80%]">${text}</div>`;
             } else if (role === 'npc') {
-                div.innerHTML = `<div class="bg-slate-700 text-white p-3 rounded-xl rounded-tl-none border border-slate-500 shadow-md max-w-[80%]"><span class="text-xs text-slate-400 block mb-1">NPC</span>"${text}"</div>`;
+                div.innerHTML = `<div class="bg-slate-700 text-white p-4 rounded-xl rounded-tl-none border border-slate-500 shadow-md max-w-[80%]"><span class="text-xs text-slate-400 block mb-1 font-bold">NPC</span>"${text}"</div>`;
             } else if (role === 'system') {
                 div.className = 'animate-pop flex w-full justify-center my-2';
-                div.innerHTML = `<div class="bg-slate-800/80 text-indigo-300 text-xs px-4 py-1 rounded-full border border-indigo-500/50">${text}</div>`;
+                div.innerHTML = `<div class="bg-slate-800/80 text-cyan-300 text-xs px-4 py-2 rounded-full border border-cyan-500/50">${text}</div>`;
             }
             
             box.appendChild(div);
